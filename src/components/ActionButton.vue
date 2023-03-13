@@ -15,7 +15,10 @@ export default {
     type: {
       type: String,
       required: false,
-      default: ''
+      default: 'primary',
+      validator(value) {
+        return ['primary', 'secondary'].includes(value)
+      }
     }
   },
   computed: {
