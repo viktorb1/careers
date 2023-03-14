@@ -1,5 +1,5 @@
 <template>
-  <header class="w-full text-sm">
+  <header :class="`w-full text-sm ${headerHeightClass}`">
     <div class="fixed top-0 left-0 h-16 w-full bg-white">
       <div class="mx-auto flex h-full flex-nowrap border-b border-solid border-brand-gray-1 px-8">
         <a href="/" class="flex h-full items-center text-xl">{{ company }}</a>
@@ -31,6 +31,11 @@ export default {
     ActionButton,
     ProfileImage,
     TheSubnav
+  },
+  computed: {
+    headerHeightClass() {
+      return this.isLoggedIn ? 'h-32' : 'h-16'
+    }
   },
   data() {
     return {
