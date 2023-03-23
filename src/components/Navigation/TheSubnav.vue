@@ -12,9 +12,9 @@
 <script>
 export default {
   name: 'TheSubnav',
-  data() {
-    return {
-      onJobsResultsPage: true
+  computed: {
+    onJobsResultsPage() {
+      return this.$route.name === 'JobResults'
     }
   }
 }

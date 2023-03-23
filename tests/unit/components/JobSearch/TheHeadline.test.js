@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/vue'
 import { nextTick } from 'vue'
 
-import TheHeadline from '@/components/TheHeadline.vue'
+import TheHeadline from '@/components/JobSearch/TheHeadline.vue'
 
 describe('TheHeadline', () => {
   beforeEach(() => {
@@ -45,5 +45,6 @@ describe('TheHeadline', () => {
     const { unmount } = render(TheHeadline)
     unmount()
     expect(clearInterval).toHaveBeenCalled()
+    vi.unstubAllGlobals()
   })
 })
