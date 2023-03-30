@@ -1,3 +1,7 @@
-const sushi = ['Tuna', 'Salmon', 'Yellowtail', 'Eel', 'Shrimp', 'Octopus', 'Uni']
+const { ref, computed } = require('vue')
 
-console.log(sushi.slice(1, 3))
+let name = ref('Viktor')
+const title = computed(() => name.value + ' the Great')
+
+name.value = 'Peter'
+console.log(title.value)

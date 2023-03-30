@@ -8,20 +8,12 @@
         <p class="flex-grow text-sm">Page {{ currentPage }}</p>
 
         <div class="flex items-center justify-center">
-          <router-link
-            role="link"
-            v-if="previousPage"
-            :to="{ name: 'JobResults', query: { page: previousPage } }"
-            class="mx-3 text-sm font-semibold text-brand-blue-1"
-          >
+          <router-link role="link" v-if="previousPage" :to="{ name: 'JobResults', query: { page: previousPage } }"
+            class="mx-3 text-sm font-semibold text-brand-blue-1">
             Previous
           </router-link>
-          <router-link
-            v-if="nextPage"
-            role="link"
-            :to="{ name: 'JobResults', query: { page: nextPage } }"
-            class="mx-3 text-sm font-semibold text-brand-blue-1"
-          >
+          <router-link v-if="nextPage" role="link" :to="{ name: 'JobResults', query: { page: nextPage } }"
+            class="mx-3 text-sm font-semibold text-brand-blue-1">
             Next
           </router-link>
         </div>
@@ -31,24 +23,14 @@
 </template>
 
 <script>
+import { mapActions, mapState } from "pinia"
 import JobListing from '@/components/JobResults/JobListing.vue'
-import axios from 'axios'
-
+import { useJobsStore, FETCH_JOBS, FILTERED_JOBS } from "@/stores/jobs"
 export default {
   name: 'JobListings',
   components: { JobListing },
-  data() {
-    return {
-      jobs: []
-    }
-  },
   computed: {
-    displayedJobs() {
-      const pageNumber = this.currentPage
-      const firstJobIndex = (pageNumber - 1) * 10
-      const lastJobIndex = pageNumber * 10
-      return this.jobs.slice(firstJobIndex, lastJobIndex)
-    },
+    ...mapState(useJobsStore, [FILTERED_JOBS]),
     previousPage() {
       const previousPage = this.currentPage - 1
       const firstPage = 1
@@ -56,8 +38,14 @@ export default {
     },
     nextPage() {
       const nextPage = this.currentPage + 1
-      const maxPage = Math.ceil(this.jobs.length / 10)
+      const maxPage = Math.ceil(this.FILTERED_JOBS.length / 10)
       return nextPage <= maxPage ? nextPage : undefined
+    },
+    displayedJobs() {
+      const pageNumber = this.currentPage
+      const firstJobIndex = (pageNumber - 1) * 10
+      const lastJobIndex = pageNumber * 10
+      return this.FILTERED_JOBS.slice(firstJobIndex, lastJobIndex)
     },
     currentPage() {
       const pageString = this.$route.query.page || '1'
@@ -66,9 +54,10 @@ export default {
     }
   },
   async mounted() {
-    const baseUrl = import.meta.env.VITE_APP_API_URL
-    const response = await axios.get(`${baseUrl}/jobs`)
-    this.jobs = response.data
+    this.FETCH_JOBS()
+  },
+  methods: {
+    ...mapActions(useJobsStore, [FETCH_JOBS])
   }
 }
 </script>
