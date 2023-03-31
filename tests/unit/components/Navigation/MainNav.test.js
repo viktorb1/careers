@@ -3,23 +3,27 @@ import userEvent from '@testing-library/user-event'
 import { RouterLinkStub } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { useUserStore } from '@/stores/user'
+import { useRoute } from 'vue-router'
 
 import MainNav from '@/components/Navigation/MainNav.vue'
 
+vi.mock('vue-router')
+
 describe('MainNav', () => {
   const renderMainNav = () => {
+    useRoute.mockReturnValue({ name: 'Home' })
     const pinia = createTestingPinia()
 
-    const $route = {
-      name: 'Home'
-    }
+    // const $route = {
+    //   name: 'Home'
+    // }
 
     render(MainNav, {
       global: {
         plugins: [pinia],
-        mocks: {
-          $route: $route
-        },
+        // mocks: {
+        //   $route: $route
+        // },
         stubs: {
           FontAwesomeIcon: true,
           RouterLink: RouterLinkStub

@@ -22,42 +22,31 @@
   </main>
 </template>
 
-<script>
-import { mapActions, mapState } from "pinia"
+<script setup>
 import JobListing from '@/components/JobResults/JobListing.vue'
-import { useJobsStore, FETCH_JOBS, FILTERED_JOBS } from "@/stores/jobs"
-export default {
-  name: 'JobListings',
-  components: { JobListing },
-  computed: {
-    ...mapState(useJobsStore, [FILTERED_JOBS]),
-    previousPage() {
-      const previousPage = this.currentPage - 1
-      const firstPage = 1
-      return previousPage >= firstPage ? previousPage : undefined
-    },
-    nextPage() {
-      const nextPage = this.currentPage + 1
-      const maxPage = Math.ceil(this.FILTERED_JOBS.length / 10)
-      return nextPage <= maxPage ? nextPage : undefined
-    },
-    displayedJobs() {
-      const pageNumber = this.currentPage
-      const firstJobIndex = (pageNumber - 1) * 10
-      const lastJobIndex = pageNumber * 10
-      return this.FILTERED_JOBS.slice(firstJobIndex, lastJobIndex)
-    },
-    currentPage() {
-      const pageString = this.$route.query.page || '1'
-      const pageNumber = Number.parseInt(pageString)
-      return pageNumber
-    }
-  },
-  async mounted() {
-    this.FETCH_JOBS()
-  },
-  methods: {
-    ...mapActions(useJobsStore, [FETCH_JOBS])
-  }
-}
+import { useJobsStore } from "@/stores/jobs"
+import { computed, onMounted } from "vue"
+import { useRoute } from "vue-router"
+import usePreviousAndNextPages from "@/composables/usePreviousAndNextPages"
+
+const jobsStore = useJobsStore()
+const route = useRoute()
+const FILTERED_JOBS = computed(() => jobsStore.FILTERED_JOBS)
+const maxPage = computed(() => Math.ceil(FILTERED_JOBS.value.length / 10))
+const currentPage = computed(() => Number.parseInt(route.query.page || '1'))
+
+const { previousPage, nextPage } = usePreviousAndNextPages(currentPage, maxPage)
+
+
+const displayedJobs = computed(() => {
+  const pageNumber = currentPage.value
+  const firstJobIndex = (pageNumber - 1) * 10
+  const lastJobIndex = pageNumber * 10
+  return FILTERED_JOBS.value.slice(firstJobIndex, lastJobIndex)
+})
+
+
+
+onMounted(() => jobsStore.FETCH_JOBS())
+
 </script>

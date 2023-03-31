@@ -1,8 +1,6 @@
 <template>
-  <form
-    class="flex h-12 w-full items-center rounded-3xl border border-solid border-brand-gray-3"
-    @submit.prevent="searchForJobs"
-  >
+  <form class="flex h-12 w-full items-center rounded-3xl border border-solid border-brand-gray-3"
+    @submit.prevent="searchForJobs">
     <font-awesome-icon :icon="['fas', 'search']" class="ml-4 mr-3" />
 
     <div class="flex h-full flex-1 flex-nowrap text-base font-light">
@@ -11,10 +9,7 @@
         <text-input id="role" v-model="role" placeholder="Software Engineer" />
       </div>
     </div>
-    <span
-      class="flex h-full items-center border-l border-r border-brand-gray-3 bg-brand-gray-2 px-3"
-      >in</span
-    >
+    <span class="flex h-full items-center border-l border-r border-brand-gray-3 bg-brand-gray-2 px-3">in</span>
     <div class="flex h-full flex-1 flex-nowrap text-base font-light">
       <div class="relative flex h-full flex-1 items-center pl-3">
         <label for="location" class="absolute left-0 -top-10">Where?</label>
@@ -26,37 +21,24 @@
   </form>
 </template>
 
-<script>
+<script setup>
 import ActionButton from '@/components/Shared/ActionButton.vue'
 import TextInput from '@/components/Shared/TextInput.vue'
+import { useRouter } from "vue-router"
+import { ref } from "vue"
 
-export default {
-  name: 'JobSearchForm',
-  components: { ActionButton, TextInput },
-  data() {
-    return {
-      role: '',
-      location: ''
+const role = ref('')
+const location = ref('')
+const router = useRouter()
+
+const searchForJobs = () => {
+  router.push({
+    name: 'JobResults',
+    query: {
+      role: role.value,
+      location: location.value
     }
-  },
-  methods: {
-    // updateRole(payload) { // no longer necessary since we are doing it inline in the <template>
-    //   console.log(payload)
-    //   this.role = payload
-    // },
-    // updateLocation(payload) {
-    //   console.log(payload)
-    //   this.location = payload
-    // }
-    searchForJobs() {
-      this.$router.push({
-        name: 'JobResults',
-        query: {
-          role: this.role,
-          location: this.location
-        }
-      })
-    }
-  }
+  })
 }
+
 </script>
