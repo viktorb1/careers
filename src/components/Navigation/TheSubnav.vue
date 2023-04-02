@@ -10,7 +10,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { mapState } from "pinia"
 
 import { useJobsStore } from "@/stores/jobs"

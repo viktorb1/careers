@@ -1,8 +1,10 @@
 import { createPinia, setActivePinia } from 'pinia'
 import axios from 'axios'
+import type { Mock } from 'vitest'
 
 import { useJobsStore } from '@/stores/jobs'
 import { useUserStore } from '@/stores/user'
+import type { Job } from '@/api/types'
 
 describe('state', () => {
   beforeEach(() => {
@@ -16,6 +18,7 @@ describe('state', () => {
 })
 
 vi.mock('axios')
+const axiosGetMock = axios.get as Mock
 
 describe('actions', () => {
   beforeEach(() => {
@@ -24,7 +27,7 @@ describe('actions', () => {
 
   describe('FETCH_JOBS', () => {
     it('makes API request and stores received jobs', async () => {
-      axios.get.mockResolvedValue({ data: ['Job 1', 'Job 2'] })
+      axiosGetMock.mockResolvedValue({ data: ['Job 1', 'Job 2'] })
       const store = useJobsStore()
       await store.FETCH_JOBS()
       expect(store.jobs).toEqual(['Job 1', 'Job 2'])
@@ -44,7 +47,7 @@ describe('getters', () => {
         { organization: 'Google' },
         { organization: 'Amazon' },
         { organization: 'Google' }
-      ]
+      ] as Job[]
 
       const result = store.UNIQUE_ORGANIZATIONS
       expect(result).toEqual(new Set(['Google', 'Amazon']))
@@ -54,7 +57,11 @@ describe('getters', () => {
   describe('UNIQUE_JOB_TYPES', () => {
     it('finds unique job types from list of jobs', () => {
       const store = useJobsStore()
-      store.jobs = [{ jobType: 'Full-time' }, { jobType: 'Temporary' }, { jobType: 'Full-time' }]
+      store.jobs = [
+        { jobType: 'Full-time' },
+        { jobType: 'Temporary' },
+        { jobType: 'Full-time' }
+      ] as Job[]
 
       const result = store.UNIQUE_JOB_TYPES
       expect(result).toEqual(new Set(['Full-time', 'Temporary']))
@@ -67,7 +74,7 @@ describe('getters', () => {
         const userStore = useUserStore()
         userStore.selectedOrganizations = []
         const store = useJobsStore()
-        const job = { organization: 'Google' }
+        const job = { organization: 'Google' } as Job
 
         const result = store.INCLUDE_JOB_BY_ORGANIZATION(job)
         expect(result).toBe(true)
@@ -91,7 +98,7 @@ describe('getters', () => {
         const userStore = useUserStore()
         userStore.selectedJobTypes = []
         const store = useJobsStore()
-        const job = { jobType: 'Full-time' }
+        const job = { jobType: 'Full-time' } as Job
 
         const result = store.INCLUDE_JOB_BY_JOB_TYPE(job)
         expect(result).toBe(true)
@@ -102,7 +109,7 @@ describe('getters', () => {
       const userStore = useUserStore()
       userStore.selectedJobTypes = ['Full-time', 'Part-time']
       const store = useJobsStore()
-      const job = { jobType: 'Part-time' }
+      const job = { jobType: 'Part-time' } as Job
 
       const result = store.INCLUDE_JOB_BY_JOB_TYPE(job)
       expect(result).toBe(true)

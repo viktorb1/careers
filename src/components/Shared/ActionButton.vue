@@ -4,7 +4,7 @@
   </button>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed } from "vue"
 const props = defineProps({
   text: {
@@ -15,7 +15,7 @@ const props = defineProps({
     type: String,
     required: false,
     default: 'primary',
-    validator(value) {
+    validator(value: string) {
       return ['primary', 'secondary'].includes(value)
     }
   }
