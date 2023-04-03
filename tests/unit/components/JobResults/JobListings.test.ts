@@ -6,6 +6,7 @@ import { RouterLinkStub } from '@vue/test-utils'
 import { useJobsStore } from '@/stores/jobs'
 import { useRoute } from 'vue-router'
 import type { Mock } from 'vitest'
+import { useDegreesStore } from '@/stores/degrees'
 
 vi.mock('vue-router')
 const useRouteMock = useRoute as Mock
@@ -14,6 +15,7 @@ describe('JobListings', () => {
   const renderJobListings = ($route = {}) => {
     const pinia = createTestingPinia()
     const jobsStore = useJobsStore()
+    const degreesStore = useDegreesStore()
     // @ts-expect-error
     jobsStore.FILTERED_JOBS = Array(15).fill({})
 
@@ -26,7 +28,7 @@ describe('JobListings', () => {
       }
     })
 
-    return { jobsStore }
+    return { jobsStore, degreesStore }
   }
 
   it('fetches jobs', () => {
@@ -34,7 +36,13 @@ describe('JobListings', () => {
     const { jobsStore } = renderJobListings()
 
     expect(jobsStore.FETCH_JOBS).toHaveBeenCalled()
-  })
+  }),
+    it('fetches degrees', () => {
+      useRouteMock.mockReturnValue({ query: {} })
+      const { degreesStore } = renderJobListings()
+
+      expect(degreesStore.FETCH_DEGREES).toHaveBeenCalled()
+    })
 
   it('displays maximum of 10 jobs', async () => {
     // axios.get.mockResolvedValue({ data: Array(15).fill({}) })

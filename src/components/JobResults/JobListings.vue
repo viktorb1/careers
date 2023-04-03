@@ -28,6 +28,7 @@ import { useJobsStore } from "@/stores/jobs"
 import { computed, onMounted } from "vue"
 import { useRoute } from "vue-router"
 import usePreviousAndNextPages from "@/composables/usePreviousAndNextPages"
+import { useDegreesStore } from '@/stores/degrees'
 
 const jobsStore = useJobsStore()
 const route = useRoute()
@@ -46,7 +47,9 @@ const displayedJobs = computed(() => {
 })
 
 
+const degreesStore = useDegreesStore()
 
 onMounted(() => jobsStore.FETCH_JOBS())
+onMounted(degreesStore.FETCH_DEGREES)
 
 </script>

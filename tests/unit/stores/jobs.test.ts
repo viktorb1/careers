@@ -116,6 +116,30 @@ describe('getters', () => {
     })
   })
 
+  describe('INCLUDE_JOB_BY_DEGREE', () => {
+    describe('when the user has not selected any job types', () => {
+      it('includes jobs', () => {
+        const userStore = useUserStore()
+        userStore.selectedDegrees = []
+        const store = useJobsStore()
+        const job = { jobType: 'Full-time' } as Job
+
+        const result = store.INCLUDE_JOB_BY_DEGREE(job)
+        expect(result).toBe(true)
+      })
+    })
+
+    it('identifies if job is associated with given degrees', () => {
+      const userStore = useUserStore()
+      userStore.selectedDegrees = ["Master's"]
+      const store = useJobsStore()
+      const job = { degree: "Master's" } as Job
+
+      const result = store.INCLUDE_JOB_BY_DEGREE(job)
+      expect(result).toBe(true)
+    })
+  })
+
   // describe('FILTERED_JOBS_BY_ORGANIZATIONS', () => {
   //   it('identifies jobs that are associated with the given organizations', () => {
   //     const jobsStore = useJobsStore()
